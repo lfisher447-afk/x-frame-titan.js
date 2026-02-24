@@ -1,0 +1,47 @@
+Installation / Usage Guide via jsDelivr workflow
+Because this is compiled to a clean UMD module without any .js file dependencies, anyone can use it by simply injecting it via a script tag.
+
+1. HTML Drop-in Method
+code
+Html
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Load the library -->
+    <script src="path/to/x-frame-titan.min.js"></script>
+</head>
+<body>
+
+    <!-- 
+      Simply use the standard iframe tag with the `is` attribute. 
+      mode="virtual" (default) applies the True Bypass mechanism.
+      mode="cloak" falls back to Google Translate proxy.
+    -->
+    <iframe is="x-frame-bypass" 
+            src="https://google.com" 
+            mode="virtual" 
+            theme="#ff0000" 
+            style="width:100vw; height:100vh;">
+    </iframe>
+
+</body>
+</html>
+2. Programmatic JavaScript Method
+code
+JavaScript
+// Create Titan element programmatically
+const titanFrame = document.createElement('iframe', { is: 'x-frame-bypass' });
+
+// Add event listeners (Custom API)
+titanFrame.addEventListener('titan-load-start', (e) => console.log('Loading:', e.detail.url));
+titanFrame.addEventListener('titan-load-complete', (e) => console.log('Done:', e.detail.url));
+
+// Inject into DOM
+document.body.appendChild(titanFrame);
+
+// Command the Virtual Browser API
+titanFrame.navigate('https://cnn.com');
+The "Better Algorithm" Breakthroughs detailed:
+The In-Context Network Overrider (<script id="titan-interceptor">): Earlier versions would fail if the embedded page utilized React, Angular, or standard vanilla JS fetching fetch('/api/users'). This new version overrides the native network prototype inside the iframe itself, converting local XHR/Fetch paths to full paths routed through the external Gateway Swarm.
+
+PostMessage Architecture (window.parent.postMessage({ type: 'TITAN_NAVIGATE'... })): Instead of clicking a link and letting the iframe navigate normally (which throws CORS tracking errors), click events are caught matching <a> tags, neutralized via e.preventDefault(), and pushed to the global wrapper. The parent class then takes the target URL and repeats the gateway-swarm routing securely over it.
